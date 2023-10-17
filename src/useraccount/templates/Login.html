@@ -1,0 +1,20 @@
+{% extends 'base1.html' %} {% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6 offset-md-3 mt-5 text-center">
+      <h2>Login Here</h2>
+  <form action="" method="post">
+    {% csrf_token %} {{form.as_p}}
+    <button type="submit">Login</button>
+    <h5py>Don't Have Account? <a href="/signup">Register Now</a></h5py>
+  </form>
+</div>
+</div>
+</div>
+
+</style>
+
+{% endblock content %}
+
+
+

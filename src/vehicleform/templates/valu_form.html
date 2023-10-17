@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vehicle Form</title>
+    <link rel="stylesheet" href="path/to/bootstrap.css">
+
+    <style>
+        
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f7f7f7;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+       
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        
+        .error-message {
+            color: red;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+
+        
+        input[type="submit"] {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        
+        h2 {
+            color: #007BFF;
+        }
+
+       
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+
+</head>
+<body>
+    <form method="post" action="{% url 'Predictionmodel:prediction' %}">
+        {% csrf_token %}
+        <label for="{{ form.vehicle_brand.id_for_label }}">Select a Brand:</label>
+        {{ form.vehicle_brand }}
+        <br>
+        <label for="{{ form.vehicle_name.id_for_label }}">Select a Vehicle:</label>
+        <select id="vehicle_name" name="vehicle_name" disabled>
+            <option value="" disabled>Select a Brand first</option>
+        </select>
+        <br>
+        <label for="{{ form.year.id_for_label }}">Year:</label>
+        {{ form.year }}
+        {% if form.year.errors %}
+        <p class="text-red-500" style="color:red;">{{ form.year.errors.0 }}</p>
+        {% endif %}
+        <br>
+        <label for="{{ form.distance_travelled.id_for_label }}">Distance Traveled (in km):</label>
+        {{ form.distance_travelled }}
+        <br>
+        <label for="{{ form.fuel.id_for_label }}">Fuel Type:</label>
+        {{ form.fuel }}
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+    {% if price is not None %}
+    <h2>Predicted Price: Rs.{{ price }}</h2>
+    <p>You have entered the following details:</p>
+    <ul>
+        <li><strong>Brand:</strong> {{ form.vehicle_brand.value }}</li>
+        <li><strong>Vehicle:</strong> {{ form.vehicle_name.value }}</li>
+        <li><strong>Year:</strong> {{ form.year.value }}</li>
+        <li><strong>Distance Traveled:</strong> {{ form.distance_travelled.value }} km</li>
+        <li><strong>Fuel Type:</strong> {{ form.fuel.value }}</li>
+    </ul>
+    {% endif %}
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const brandSelect = document.getElementById("id_vehicle_brand");
+            const vehicleSelect = document.getElementById("vehicle_name");
+
+            brandSelect.addEventListener("change", function () {
+                const selectedBrandName = this.value;
+
+                // Clear the vehicle dropdown and disable it
+                if(vehicleSelect) {
+                    vehicleSelect.innerHTML = '<option value="">Select a Brand first</option>';
+                    vehicleSelect.disabled = true;
+                }
+                if (selectedBrandName) {
+                    // Fetch vehicles for the selected brand from the server using AJAX
+                    fetch(`/get_vehicles/${selectedBrandName}`)
+                        .then((response) => response.json())
+                        .then((data) => {
+                            vehicleSelect.innerHTML = '<option value="">Select a Vehicle</option>';
+                            data.forEach((vehicle) => {
+                                const option = document.createElement("option");
+                                option.value = vehicle.vehicle_name;
+                                option.text = vehicle.vehicle_name;
+                                vehicleSelect.appendChild(option);
+                            });
+                            vehicleSelect.disabled = false;
+                        });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

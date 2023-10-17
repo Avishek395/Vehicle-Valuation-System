@@ -1,0 +1,20 @@
+{% extends 'base1.html' %} {% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 offset-md-3 mt-5 text-center">
+      <h2>Signup Here</h2>
+  <form action="" method="post">
+    {% csrf_token %} {{form.non_field_errors}} {% for fields in form %}
+    <div class="form-group my-2">
+      <label>{{fields.label_tag}}</label>
+      {{fields}}
+      <span class="text text-danger">{{fields.errors}}</span>
+    </div>
+    {% endfor %}
+    <button type="submit">Signup</button>
+  </form>
+</div>
+</div>
+</div>
+{%endblock content%}

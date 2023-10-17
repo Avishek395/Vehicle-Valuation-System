@@ -1,0 +1,21 @@
+
+
+{% extends 'base1.html' %}
+{% load humanize %}
+{% block content %}
+<div class="row">
+  <div class="col-md-6 offset-md-3 mt-5 text-center">
+    <h2>Valuation Form</h2>
+  <form method="POST" action="{% url 'Predictionmodel:prediction' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+  </form>
+  {% if price %}
+    <h2>Predicted Value of {{name}} is</h2>
+  <h2>Rs. {{ price|floatformat:2|intcomma }}
+  </h2>
+  </div>
+</div>
+  {% endif %}
+{% endblock %}
